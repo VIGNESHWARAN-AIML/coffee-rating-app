@@ -5,32 +5,44 @@ const cors = require("cors");
 
 const app = express();
 
-// Render PORT + local PORT
 const PORT = process.env.PORT || 3000;
 
-// Database file
 const DB = path.join(__dirname, "database.json");
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Serve Frontend files
-app.use(express.static(path.join(__dirname, "..")));
 
-// ========================================
+// ==========================================
+// SERVE FRONTEND
+// ==========================================
+
+app.use(
+    express.static(
+        path.join(__dirname, "..", "Frontend")
+    )
+);
+
+
+// ==========================================
 // HOME PAGE
-// ========================================
+// ==========================================
 
 app.get("/", (req, res) => {
     res.sendFile(
-        path.join(__dirname, "..", "Frontend", "index.html")
+        path.join(
+            __dirname,
+            "..",
+            "Frontend",
+            "index.html"
+        )
     );
 });
 
-// ========================================
-// DATABASE FUNCTIONS
-// ========================================
+
+// ==========================================
+// DATABASE
+// ==========================================
 
 function readDB() {
     try {
@@ -38,7 +50,10 @@ function readDB() {
             fs.readFileSync(DB, "utf8")
         );
     } catch (error) {
-        console.error("Database read error:", error);
+        console.error(
+            "Database read error:",
+            error
+        );
 
         return {
             coffees: [],
@@ -47,6 +62,7 @@ function readDB() {
     }
 }
 
+
 function writeDB(data) {
     try {
         fs.writeFileSync(
@@ -54,59 +70,86 @@ function writeDB(data) {
             JSON.stringify(data, null, 2)
         );
     } catch (error) {
-        console.error("Database write error:", error);
+        console.error(
+            "Database write error:",
+            error
+        );
     }
 }
 
-// ========================================
+
+// ==========================================
 // GET COFFEES
-// ========================================
+// ==========================================
 
 app.get("/api/coffees", (req, res) => {
+
     const db = readDB();
 
-    res.json(db.coffees || []);
+    res.json(
+        db.coffees || []
+    );
 });
 
-// ========================================
+
+// ==========================================
 // GET REVIEWS
-// ========================================
+// ==========================================
 
 app.get("/api/reviews", (req, res) => {
+
     const db = readDB();
 
-    res.json(db.reviews || []);
+    res.json(
+        db.reviews || []
+    );
 });
 
-// ========================================
-// GET STATISTICS
-// ========================================
+
+// ==========================================
+// GET STATS
+// ==========================================
 
 app.get("/api/stats", (req, res) => {
+
     const db = readDB();
 
-    const reviews = db.reviews || [];
-    const coffees = db.coffees || [];
+    const reviews =
+        db.reviews || [];
+
+    const coffees =
+        db.coffees || [];
 
     const average =
         reviews.length > 0
             ? reviews.reduce(
                 (sum, review) =>
-                    sum + Number(review.rating || 0),
+                    sum +
+                    Number(
+                        review.rating || 0
+                    ),
                 0
             ) / reviews.length
             : 0;
 
     res.json({
-        average: Number(average.toFixed(1)),
-        reviews: reviews.length,
-        coffees: coffees.length
+        average:
+            Number(
+                average.toFixed(1)
+            ),
+
+        reviews:
+            reviews.length,
+
+        coffees:
+            coffees.length
     });
 });
 
-// ========================================
+
+// ==========================================
 // ADD REVIEW
-// ========================================
+// ==========================================
 
 app.post("/api/reviews", (req, res) => {
 
@@ -129,16 +172,24 @@ app.post("/api/reviews", (req, res) => {
             "Coffee",
 
         rating:
-            Number(req.body.rating) || 0,
+            Number(
+                req.body.rating
+            ) || 0,
 
         taste:
-            Number(req.body.taste) || 0,
+            Number(
+                req.body.taste
+            ) || 0,
 
         aroma:
-            Number(req.body.aroma) || 0,
+            Number(
+                req.body.aroma
+            ) || 0,
 
         presentation:
-            Number(req.body.presentation) || 0,
+            Number(
+                req.body.presentation
+            ) || 0,
 
         comment:
             req.body.comment ||
@@ -150,69 +201,96 @@ app.post("/api/reviews", (req, res) => {
             )
     };
 
+
     if (!db.reviews) {
         db.reviews = [];
     }
 
-    db.reviews.unshift(review);
+
+    db.reviews.unshift(
+        review
+    );
+
 
     writeDB(db);
 
-    res.status(201).json(review);
+
+    res.status(201).json(
+        review
+    );
 });
 
-// ========================================
+
+// ==========================================
 // DELETE REVIEW
-// ========================================
+// ==========================================
 
-app.delete("/api/reviews/:id", (req, res) => {
+app.delete(
+    "/api/reviews/:id",
+    (req, res) => {
 
-    const db = readDB();
+        const db = readDB();
 
-    const reviewId =
-        Number(req.params.id);
+        const reviewId =
+            Number(
+                req.params.id
+            );
 
-    const oldLength =
-        db.reviews.length;
+        const oldLength =
+            db.reviews.length;
 
-    db.reviews =
-        db.reviews.filter(
-            review =>
-                review.id !== reviewId
-        );
+        db.reviews =
+            db.reviews.filter(
+                review =>
+                    review.id !==
+                    reviewId
+            );
 
-    writeDB(db);
+        writeDB(db);
 
-    res.json({
-        success: true,
-        deleted:
-            db.reviews.length <
-            oldLength
-    });
-});
+        res.json({
 
-// ========================================
-// 404 API HANDLER
-// ========================================
+            success: true,
 
-app.use("/api", (req, res) => {
+            deleted:
+                db.reviews.length <
+                oldLength
 
-    res.status(404).json({
-        error: "API endpoint not found"
-    });
+        });
+    }
+);
 
-});
 
-// ========================================
+// ==========================================
+// API 404
+// ==========================================
+
+app.use(
+    "/api",
+    (req, res) => {
+
+        res.status(404).json({
+
+            error:
+                "API endpoint not found"
+
+        });
+    }
+);
+
+
+// ==========================================
 // START SERVER
-// ========================================
+// ==========================================
 
 app.listen(
     PORT,
     "0.0.0.0",
     () => {
+
         console.log(
             `☕ Brewlog server running on port ${PORT}`
         );
+
     }
 );
