@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brewlog — Coffee Rating</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <header class="navbar">
+    <a class="brand" href="#"><span class="brand-mark">☕</span><span>BREWLOG</span></a>
+    <nav>
+      <a href="#discover">Discover</a>
+      <a href="#review">Rate</a>
+      <a href="#community">Community</a>
+      <a href="#analytics">Analytics</a>
+    </nav>
+    <button class="nav-cta" onclick="document.querySelector('#review').scrollIntoView({behavior:'smooth'})">Rate a Coffee <span>↗</span></button>
+  </header>
+
+  <main>
+    <section class="hero" id="discover">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span class="pulse-dot"></span> THE COFFEE COMMUNITY</p>
+        <h1>Your daily cup,<br><em>rated perfectly.</em></h1>
+        <p class="hero-text">Discover exceptional coffee, capture every tasting note, and see what the community is brewing.</p>
+        <div class="hero-actions">
+          <button class="primary-btn" onclick="document.querySelector('#review').scrollIntoView({behavior:'smooth'})">Rate your coffee <span>→</span></button>
+          <button class="ghost-btn" onclick="document.querySelector('#community').scrollIntoView({behavior:'smooth'})">Explore reviews</button>
+        </div>
+        <div class="hero-proof"><div class="avatars"><span>V</span><span>A</span><span>M</span><span>+</span></div><div><strong>2.4k+</strong><small>coffee lovers tasting</small></div></div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="steam"><i></i><i></i><i></i></div>
+        <div class="cup-shadow"></div>
+        <div class="coffee-cup">
+          <div class="cup-top"><div class="coffee-liquid"></div><div class="latte-art">♡</div></div>
+          <div class="cup-body"></div><div class="cup-handle"></div>
+        </div>
+        <div class="floating-tag tag-rating"><span>★</span><strong>4.9</strong><small>Top rated</small></div>
+        <div class="floating-tag tag-beans"><span>✦</span><small>Freshly brewed</small></div>
+      </div>
+    </section>
+
+    <section class="stats reveal">
+      <div><strong data-count="4.8">0</strong><span>Average rating</span></div>
+      <div><strong data-count="128">0</strong><span>Coffees reviewed</span></div>
+      <div><strong data-count="94">0%</strong><span>Would recommend</span></div>
+      <div><strong data-count="2.4">0k+</strong><span>Community tasters</span></div>
+    </section>
+
+    <section class="section" id="trending">
+      <div class="section-heading reveal"><div><p class="eyebrow">CURATED FOR YOU</p><h2>Trending brews</h2></div><button class="text-btn" onclick="loadCoffees()">Refresh selection ↻</button></div>
+      <div class="coffee-grid" id="coffeeGrid"></div>
+    </section>
+
+    <section class="review-section section" id="review">
+      <div class="review-intro reveal"><p class="eyebrow">YOUR TASTING NOTE</p><h2>Give your cup<br><em>a little love.</em></h2><p>Rate the details that make a coffee memorable. Your review helps the community find their next favorite.</p></div>
+      <form class="review-card reveal" id="reviewForm">
+        <div class="form-row">
+          <label>Coffee name<input id="coffeeName" required placeholder="e.g. Cinnamon Cloud Latte"></label>
+          <label>Type<select id="coffeeType"><option>Latte</option><option>Espresso</option><option>Cappuccino</option><option>Cold Brew</option><option>Americano</option><option>Mocha</option></select></label>
+        </div>
+        <div class="rating-box"><div><span>Your overall rating</span><strong id="ratingValue">5.0</strong></div><div class="stars" id="stars" aria-label="Rating"></div></div>
+        <div class="sliders">
+          <label><span>Taste <b id="tasteVal">9</b></span><input type="range" id="taste" min="1" max="10" value="9"></label>
+          <label><span>Aroma <b id="aromaVal">9</b></span><input type="range" id="aroma" min="1" max="10" value="9"></label>
+          <label><span>Presentation <b id="presentationVal">8</b></span><input type="range" id="presentation" min="1" max="10" value="8"></label>
+        </div>
+        <label class="full-label">Your review<textarea id="comment" rows="3" placeholder="What stood out in this cup?"></textarea></label>
+        <button class="primary-btn submit-btn" type="submit">Publish review <span>↗</span></button>
+        <div id="formMessage" class="form-message"></div>
+      </form>
+    </section>
+
+    <section class="section community" id="community">
+      <div class="section-heading reveal"><div><p class="eyebrow">FROM THE COMMUNITY</p><h2>Fresh perspectives</h2></div></div>
+      <div class="review-list" id="reviewList"></div>
+    </section>
+
+    <section class="analytics section" id="analytics">
+      <div class="section-heading reveal"><div><p class="eyebrow">THE NUMBERS</p><h2>Know your brew.</h2></div></div>
+      <div class="analytics-card reveal"><div class="chart-wrap"><canvas id="ratingChart"></canvas></div><div class="analytics-copy"><span class="big-rating">4.8</span><div class="mini-stars">★★★★★</div><p>Community average across all coffee reviews.</p><div class="metric"><span>5 star</span><div><i style="width:88%"></i></div><b>88%</b></div><div class="metric"><span>4 star</span><div><i style="width:72%"></i></div><b>72%</b></div><div class="metric"><span>3 star</span><div><i style="width:32%"></i></div><b>32%</b></div></div></div>
+    </section>
+  </main>
+
+  <footer><div class="brand"><span class="brand-mark">☕</span><span>BREWLOG</span></div><p>Made for people who take coffee seriously.</p><span>© 2026 Brewlog</span></footer>
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>

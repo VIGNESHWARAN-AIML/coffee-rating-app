@@ -1,0 +1,13 @@
+{
+  "name": "brewlog-coffee-rating-app",
+  "version": "1.0.0",
+  "description": "Premium animated coffee rating and review application",
+  "main": "Backend/server.js",
+  "scripts": {
+    "start": "node Backend/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

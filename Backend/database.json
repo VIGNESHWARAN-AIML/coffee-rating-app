@@ -1,0 +1,48 @@
+{
+  "coffees": [
+    {
+      "id": 1,
+      "name": "Cinnamon Cloud Latte",
+      "type": "Latte",
+      "rating": 4.9,
+      "reviews": 42
+    },
+    {
+      "id": 2,
+      "name": "Midnight Espresso",
+      "type": "Espresso",
+      "rating": 4.8,
+      "reviews": 36
+    },
+    {
+      "id": 3,
+      "name": "Velvet Mocha",
+      "type": "Mocha",
+      "rating": 4.7,
+      "reviews": 29
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "name": "Aarav",
+      "rating": 5,
+      "comment": "Rich aroma, silky texture and a beautifully balanced finish.",
+      "date": "Today"
+    },
+    {
+      "id": 2,
+      "name": "Maya",
+      "rating": 4.5,
+      "comment": "Loved the creamy body. The cinnamon note really came through.",
+      "date": "Yesterday"
+    },
+    {
+      "id": 3,
+      "name": "Kavin",
+      "rating": 4.8,
+      "comment": "A seriously good afternoon cup. Smooth without being too sweet.",
+      "date": "2 days ago"
+    }
+  ]
+}
